@@ -42,6 +42,7 @@ services:
   dns-server:
     image: ubuntu/bind9
     container_name: dns-main
+    user: root
     networks:
       net_yellow:
         ipv4_address: 10.0.10.10
@@ -49,15 +50,12 @@ services:
       - NET_ADMIN
     environment:
       - BIND9_USER=root
-    command: >
-      /bin/bash -c "
-      ip route del default &&
-      ip route add default via 10.0.10.2 &&
-      /usr/sbin/named -f -u root -4 -c /etc/bind/named.conf
-      "
     volumes:
       - ./config/dns/named.conf.options:/etc/bind/named.conf.options
       - ./logs/dns:/var/log/named
+      # Montujemy nasz nowy skrypt:
+      - ./config/dns/setup.sh:/opt/setup.sh
+    entrypoint: ["/opt/setup.sh"]
 
   # --- SEGMENT NIEBIESKI ---
   web-server:
