@@ -1,0 +1,32 @@
+acl "trusted" {
+    10.0.0.0/8;
+    172.20.0.0/16;
+    localhost;
+};
+
+options {
+    directory "/var/cache/bind";
+
+    recursion yes;
+    allow-query { trusted; };
+    allow-recursion { trusted; };
+    
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+
+    dnssec-validation auto;
+    listen-on-v6 { any; };
+};
+
+# Logowanie zapytań (dla SIEM)
+logging {
+    channel query_log {
+        file "/var/log/named/query.log" versions 3 size 5m;
+        severity info;
+        print-time yes;
+        print-category yes;
+    };
+    category queries { query_log; };
+};
