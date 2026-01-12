@@ -1,0 +1,9 @@
+# Reguły detekcji dla LAB2
+# Wykrywanie skanowania NMAP (SYN Scan)
+alert tcp any any -> $HOME_NET any (flags: S; msg:"NIDS: Wykryto Skanowanie TCP SYN"; sid:1000001; rev:1;)
+
+# Wykrywanie prób dostępu do bazy danych z nieautoryzowanych sieci
+alert tcp $EXTERNAL_NET any -> 10.0.40.10 5432 (msg:"NIDS: Podejrzane połączenie do DB"; sid:1000002; rev:1;)
+
+# Wykrywanie ICMP (Ping) - dla testów
+alert icmp any any -> any any (msg:"NIDS: Wykryto pakiet ICMP"; sid:1000003; rev:1;)

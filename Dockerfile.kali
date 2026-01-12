@@ -1,0 +1,10 @@
+FROM kalilinux/kali-rolling
+ENV DEBIAN_FRONTEND=noninteractive
+# Instalacja iproute2 (komenda ip), ping, netcat
+RUN apt-get update && apt-get install -y \
+    iproute2 \
+    iputils-ping \
+    netcat-openbsd \
+    curl \
+    nmap \
+    && rm -rf /var/lib/apt/lists/*

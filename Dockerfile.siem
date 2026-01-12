@@ -1,0 +1,17 @@
+FROM wazuh/wazuh-manager:4.14.1
+
+# Przełączamy się na roota (wymagane w Wazuh)
+USER root
+
+# Wazuh stoi na CentOS/Amazon Linux, więc używamy YUM
+# iproute -> komenda 'ip'
+# iputils -> komenda 'ping'
+# nc -> komenda 'nc'
+RUN yum update -y && yum install -y \
+    iproute \
+    iputils \
+    procps \
+    && yum clean all
+
+# Zostajemy na roocie
+USER root
