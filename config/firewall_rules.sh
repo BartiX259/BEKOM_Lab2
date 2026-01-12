@@ -33,14 +33,19 @@ iptables -A FORWARD -s $NET_BLUE -d $NET_GREEN -j DROP
 iptables -t nat -A POSTROUTING -o $WAN_IFACE -j MASQUERADE
 iptables -t nat -A PREROUTING -i $WAN_IFACE -p tcp --dport 80 -j DNAT --to-destination $IP_WEB:80
 
-iptables -A FORWARD -s $NET_GREEN -o $WAN_IFACE -j ACCEPT
-
 iptables -A FORWARD -s $NET_GREEN -d $IP_DNS -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -s $NET_GREEN -d $IP_DNS -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -s $NET_YELLOW -o $WAN_IFACE -j ACCEPT
+
+iptables -A FORWARD -s $IP_DNS -o $WAN_IFACE -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -s $IP_DNS -o $WAN_IFACE -p tcp --dport 53 -j ACCEPT
 
 iptables -A FORWARD -i $WAN_IFACE -d $IP_DNS -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -i $WAN_IFACE -d $IP_DNS -p tcp --dport 53 -j ACCEPT
+
+iptables -A FORWARD -s $NET_GREEN -o $WAN_IFACE -j ACCEPT
+
+iptables -A FORWARD -s $NET_YELLOW -o $WAN_IFACE -j ACCEPT
+
 iptables -A FORWARD -i $WAN_IFACE -d $NET_BLUE -p tcp -m multiport --dports 80,443 -j ACCEPT
 
 iptables -A FORWARD -s $NET_GREEN -d $NET_BLUE -p tcp -m multiport --dports 80,443 -j ACCEPT

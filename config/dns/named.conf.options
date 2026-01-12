@@ -17,7 +17,7 @@ options {
     };
 
     dnssec-validation auto;
-    listen-on-v6 { any; };
+    listen-on-v6 { none; };
 };
 
 # Logowanie zapytań (dla SIEM)
