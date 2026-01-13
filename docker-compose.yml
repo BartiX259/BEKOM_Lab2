@@ -27,6 +27,7 @@ services:
       chmod +x /opt/firewall_rules.sh &&
       /opt/firewall_rules.sh &&
       ipsec start &
+      wg-quick up wg0 &
       tail -f /dev/null
       "
     volumes:
@@ -35,6 +36,7 @@ services:
       - ./config/start_nids.sh:/opt/start_nids.sh
       - ./config/ipsec_hq.conf:/etc/ipsec.conf
       - ./config/ipsec.secrets:/etc/ipsec.secrets
+      - ./config/wg_server.conf:/etc/wireguard/wg0.conf
     ports:
       - "8080:80" # Przekierowanie portu dla dostępu do serwera WWW w segmencie niebieskim
 
@@ -74,6 +76,29 @@ services:
       net_branch:
         ipv4_address: 10.50.0.10
     command: tail -f /dev/null
+
+  remote-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: remote-worker
+    sysctls:
+      - net.ipv4.ip_forward=1
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      net_internet:
+        ipv4_address: 172.20.0.100 # Symulacja adresu IP w kawiarni/domu
+    volumes:
+      - ./config/wg_client.conf:/etc/wireguard/wg0.conf
+    command: >
+      /bin/bash -c "
+      ip route del default &&
+      ip route add default via 172.20.0.1 &&
+      wg-quick up wg0 &&
+      tail -f /dev/null
+      "
 
   # --- SEGMENT ŻÓŁTY ---
   # DNS (Tu zostawiamy ubuntu/bind9, bo to specyficzny obraz,

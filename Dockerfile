@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y \
     strongswan \
     libcharon-extra-plugins \
     kmod \
+    wireguard \
+    openresolv \
     && rm -rf /var/lib/apt/lists/*
 
 # Ustawiamy katalog roboczy

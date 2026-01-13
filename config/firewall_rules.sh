@@ -62,4 +62,17 @@ iptables -A INPUT -p esp -j ACCEPT
 iptables -A FORWARD -s 10.0.0.0/16 -d 10.50.0.0/24 -j ACCEPT
 iptables -A FORWARD -s 10.50.0.0/24 -d 10.0.0.0/16 -j ACCEPT
 
+# --- REMOTE ACCESS VPN (WIREGUARD) ---
+
+# 1. Otwarcie portu nasłuchiwania na WAN
+iptables -A INPUT -p udp --dport 51820 -j ACCEPT
+
+# 2. Zezwolenie na ruch wewnątrz tunelu (Interfejs wg0)
+# WireGuard tworzy wirtualny interfejs sieciowy 'wg0'.
+# Pozwalamy na ruch z VPN (10.99.0.0/24) do sieci LAN (Zielony/Niebieski)
+iptables -A FORWARD -i wg0 -s 10.99.0.0/24 -d 10.0.0.0/16 -j ACCEPT
+
+# Pozwalamy na powroty (LAN -> VPN)
+iptables -A FORWARD -o wg0 -d 10.99.0.0/24 -s 10.0.0.0/16 -j ACCEPT
+
 iptables -A FORWARD -m limit --limit 5/min -j LOG --log-prefix "FW-DROP: " --log-level 4
