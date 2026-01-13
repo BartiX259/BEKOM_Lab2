@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y \
     vim \
     snort \
     rsyslog \
+    strongswan \
+    libcharon-extra-plugins \
+    kmod \
     && rm -rf /var/lib/apt/lists/*
 
 # Ustawiamy katalog roboczy

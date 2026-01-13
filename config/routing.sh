@@ -38,3 +38,5 @@ set_gateway "dns-main" "10.0.10.2"
 set_gateway "vulnerability-scanner" "10.0.99.2"
 
 set_gateway "siem-manager" "10.0.99.2"
+
+set_gateway "branch-host" "10.50.0.2"

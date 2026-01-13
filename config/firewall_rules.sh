@@ -54,4 +54,12 @@ iptables -A FORWARD -s $NET_BLUE -d $NET_RED -p tcp --dport 5432 -j ACCEPT
 
 iptables -A FORWARD -s $NET_GREEN -d $NET_YELLOW -p icmp -j ACCEPT
 
+iptables -A INPUT -p udp --dport 500 -j ACCEPT
+iptables -A INPUT -p udp --dport 4500 -j ACCEPT
+iptables -A INPUT -p esp -j ACCEPT
+
+# Zezwalamy na ruch w tunelu (HQ <-> Branch)
+iptables -A FORWARD -s 10.0.0.0/16 -d 10.50.0.0/24 -j ACCEPT
+iptables -A FORWARD -s 10.50.0.0/24 -d 10.0.0.0/16 -j ACCEPT
+
 iptables -A FORWARD -m limit --limit 5/min -j LOG --log-prefix "FW-DROP: " --log-level 4

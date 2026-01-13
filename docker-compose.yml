@@ -26,17 +26,23 @@ services:
       /bin/bash -c "
       chmod +x /opt/firewall_rules.sh &&
       /opt/firewall_rules.sh &&
+      ipsec start &
       tail -f /dev/null
       "
     volumes:
       - ./config/firewall_rules.sh:/opt/firewall_rules.sh
       - ./config/local.rules:/opt/local.rules
       - ./config/start_nids.sh:/opt/start_nids.sh
+      - ./config/ipsec_hq.conf:/etc/ipsec.conf
+      - ./config/ipsec.secrets:/etc/ipsec.secrets
     ports:
       - "8080:80" # Przekierowanie portu dla dostępu do serwera WWW w segmencie niebieskim
+
   # --- SEGMENT ZDALNY: DRUGIE BIURO (BRANCH) ---
   fw-branch:
-    image: ubuntu:22.04
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: fw-branch
     privileged: true
     sysctls:
@@ -48,8 +54,17 @@ services:
         ipv4_address: 10.50.0.2        # NIE .1, bo .1 to gateway bridge Dockera
       net_internet:
         ipv4_address: 172.20.0.3       # musi być w tej samej sieci co HQ: 172.20.0.0/24
-    command: tail -f /dev/null
-
+    volumes:
+      - ./config/ipsec_branch.conf:/etc/ipsec.conf
+      - ./config/ipsec.secrets:/etc/ipsec.secrets
+    command: >
+      /bin/bash -c "
+      ip route del default &&
+      ip route add default via 172.20.0.1 &&
+      iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE &&
+      ipsec start &
+      tail -f /dev/null
+      "
   branch-host:
     image: ubuntu:22.04
     container_name: branch-host
