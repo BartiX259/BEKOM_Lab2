@@ -9,7 +9,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 # traceroute - do śledzenia ścieżki pakietów
 # tcpdump - do analizy ruchu (opcjonalnie)
 RUN apt-get update && apt-get install -y \
-    wireguard \
     iptables \
     iproute2 \
     iputils-ping \
