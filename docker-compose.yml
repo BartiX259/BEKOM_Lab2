@@ -3,7 +3,7 @@ services:
   fw-hq:
     build:
       context: .
-      dockerfile: Dockerfile # Używa głównego Dockerfile (Ubuntu z toolsami)
+      dockerfile: Dockerfile
     container_name: fw-hq
     sysctls:
       - net.ipv4.ip_forward=1
@@ -53,9 +53,9 @@ services:
       - NET_ADMIN
     networks:
       net_branch:
-        ipv4_address: 10.50.0.2        # NIE .1, bo .1 to gateway bridge Dockera
+        ipv4_address: 10.50.0.2
       net_internet:
-        ipv4_address: 172.20.0.3       # musi być w tej samej sieci co HQ: 172.20.0.0/24
+        ipv4_address: 172.20.0.3
     volumes:
       - ./config/ipsec_branch.conf:/etc/ipsec.conf
       - ./config/ipsec.secrets:/etc/ipsec.secrets
@@ -101,9 +101,7 @@ services:
       "
 
   # --- SEGMENT ŻÓŁTY ---
-  # DNS (Tu zostawiamy ubuntu/bind9, bo to specyficzny obraz,
-  # ewentualnie można dodać instalację toolsów ręcznie jeśli potrzebne,
-  # ale zazwyczaj DNS tylko odpytujemy)
+  # DNS 
   dns-server:
     image: ubuntu/bind9
     container_name: dns-main
@@ -165,7 +163,7 @@ services:
   db-server:
     build:
       context: .
-      dockerfile: Dockerfile.db # <--- Budujemy z naszego pliku dla Postgres
+      dockerfile: Dockerfile.db
     container_name: db-backend
     networks:
       net_red:
@@ -176,8 +174,6 @@ services:
       POSTGRES_PASSWORD: securepass
 
   # --- SEGMENT MGMT ---
-  # Wazuh i Kali są zbyt dużymi obrazami, by je przebudowywać w locie,
-  # zazwyczaj mają już narzędzia (Kali ma wszystko, Wazuh ma podstawy).
   siem-wazuh:
     build:
       context: .
@@ -206,7 +202,7 @@ services:
       - NET_ADMIN
     command: tail -f /dev/null
 
-# --- DEFINICJA SIECI (Bez zmian) ---
+# --- DEFINICJA SIECI ---
 networks:
   net_internet:
     ipam:
