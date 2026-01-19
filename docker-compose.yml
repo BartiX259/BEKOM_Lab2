@@ -157,6 +157,7 @@ services:
       /bin/bash -c "
       ip route del default &&
       ip route add default via 10.0.30.2 &&
+      echo 'nameserver 10.0.10.10' > /etc/resolv.conf &&
       tail -f /dev/null
       "
 

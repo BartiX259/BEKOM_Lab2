@@ -1,2 +1,2 @@
 combined_files.txt
-*.log
+**/*.log
