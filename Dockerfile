@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     curl \
     netcat-openbsd \
+    nmap \
+    ssh \
+    hydra \
     dnsutils \
     traceroute \
     tcpdump \

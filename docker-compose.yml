@@ -92,6 +92,7 @@ services:
         ipv4_address: 172.20.0.100 # Symulacja adresu IP w kawiarni/domu
     volumes:
       - ./config/wg_client.conf:/etc/wireguard/wg0.conf
+      - ./default-passwords.txt:/opt/default-passwords.txt
     command: >
       /bin/bash -c "
       ip route del default &&
@@ -135,6 +136,10 @@ services:
       /bin/bash -c "
       ip route del default &&
       ip route add default via 10.0.20.2 &&
+      /sbin/sshd &&
+      id -u admin || useradd admin &&
+      echo '1234' | passwd admin --stdin &&
+      sed -i '/^root.*ALL/a admin ALL=(ALL:ALL) ALL' /etc/sudoers &&
       nginx -g 'daemon off;'
       "
     volumes:

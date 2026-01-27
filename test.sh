@@ -5,7 +5,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${YELLOW}=== AUDYT BEZPIECZEŃSTWA SIECI I USŁUG (BEKOM) ===${NC}"
+echo -e "${YELLOW}=== AUDYT BEZPIECZEŃSTWA SIECI I USŁUG ===${NC}"
 
 PASSED=0
 FAILED=0
@@ -92,7 +92,7 @@ check_ping "vulnerability-scanner" "10.0.40.10" "ALLOW" "MGMT -> CZERWONY (Skane
 echo -e "\n${YELLOW}=== PODSUMOWANIE ===${NC}"
 echo -e "Testów wykonano: $((PASSED + FAILED))"
 if [ $FAILED -eq 0 ]; then
-    echo -e "Wynik: ${GREEN}PEŁNY SUKCES (100% ZGODNOŚCI Z PROJEKTEM)${NC}"
+    echo -e "Wynik: ${GREEN}SUKCES${NC}"
 else
     echo -e "Wynik: ${RED}WYKRYTO $FAILED BŁĘDÓW${NC}"
 fi
